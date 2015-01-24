@@ -3,7 +3,7 @@
 static Window *window;
 static TextLayer *symbol_layer;
 static TextLayer *price_layer;
-static char symbol[5];
+static char symbol[6];
 static char price[10];
 static bool wasFirstMsg;
 static bool dataInited;
@@ -61,7 +61,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
   Tuple *price_tuple = dict_find(iter, QUOTE_KEY_PRICE);
 
 		if (symbol_tuple) {
-			strncpy(symbol, symbol_tuple->value->cstring, 5);
+			strncpy(symbol, symbol_tuple->value->cstring, 6);
 			text_layer_set_text(symbol_layer, symbol);
 		} else {
 			strncpy(symbol, "N/A", 5);
@@ -132,7 +132,7 @@ static void window_load(Window *window) {
       (GRect) { .origin = { 0, 20 }, .size = { bounds.size.w, 50 } });
   text_layer_set_text(symbol_layer, "PBL");
   text_layer_set_text_alignment(symbol_layer, GTextAlignmentCenter);
-  text_layer_set_font(symbol_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+  text_layer_set_font(symbol_layer, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
   layer_add_child(window_layer, text_layer_get_layer(symbol_layer));
 
   price_layer = text_layer_create(

@@ -49,13 +49,12 @@ var symbol = defaultSymbol;
 // & send the stock price back to the watch via app message
 // API documentation at http://dev.markitondemand.com/#doc
 function fetchStockQuote() {
-	running_flag = true;
+	//running_flag = true;
 	
 	var response;
 	var req = new XMLHttpRequest();
 	// build the GET request
 	req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbol, true);
-	console.log("fetchStockQuote 1");
 	req.onload = function(e) {
 		if (req.readyState == 4) {
 			// 200 - HTTP OK
@@ -63,20 +62,30 @@ function fetchStockQuote() {
 				console.log(req.responseText);
 				response = JSON.parse(req.responseText);
 				var price;
-				if (response.Message) {
-					// the markitondemand API sends a response with a Message
-					// field when the symbol is not found
-					Pebble.sendAppMessage({"price": "Not Found"});
-				}
 				if (response.Data) {
-					Pebble.sendAppMessage({1: true, 2: "QUAL", 3: "62.50"});
+					var struct = {
+						"1": true, 
+						"2": response.Data.Symbol, 
+						"3": roundPercent(response.Data.ChangePercent)
+					};
+					console.log("sending data to pebble " + JSON.stringify(struct));
+					Pebble.sendAppMessage(struct);
 				}
 			} else {
 				console.log("Request returned error code " + req.status.toString());
 			}
 		}
+		
+		//setTimeout(fetchStockQuote, 500);
 	};
-	console.log("fetchStockQuote 3");
 	req.send(null);
-	console.log("fetchStockQuote 4");
+}
+
+function roundPercent(long_float_string){
+	var long_float = parseFloat(long_float_string);
+	var short_float = long_float.toFixed(2);
+	if (short_float > 0)
+		return "+" + short_float.toString();
+	else
+		return short_float.toString();
 }
