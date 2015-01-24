@@ -1,6 +1,6 @@
 var initialized = false;
 var options = {};
-var symbol = "BRCM";
+var symbols = ["BRCM", "FB", "GOOGL"];
 var watch_list = [];
 var running_flag = false;
 
@@ -29,7 +29,7 @@ Pebble.addEventListener("ready",
 		console.log("connect! " + e.ready);
 		console.log(e.type);
 	if (!running_flag)
-			fetchStockQuote();
+			fetchStockQuote(0);
 	});
 
 // Set callback for appmessage events
@@ -39,20 +39,21 @@ Pebble.addEventListener("appmessage", function(e) {
 		msg.symbol = options.StockSymbol;
 		msg.price = "40";
 		if (!running_flag)
-			fetchStockQuote();
+			fetchStockQuote(0);
 	});
 
 
 // Fetch stock data for a given stock symbol (NYSE or NASDAQ only) from markitondemand.com
 // & send the stock price back to the watch via app message
 // API documentation at http://dev.markitondemand.com/#doc
-function fetchStockQuote() {
+function fetchStockQuote(current_idx) {
 	//running_flag = true;
 	
 	var response;
 	var req = new XMLHttpRequest();
+	
 	// build the GET request
-	req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbol, true);
+	req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbols[current_idx], true);
 	req.onload = function(e) {
 		if (req.readyState == 4) {
 			// 200 - HTTP OK
@@ -61,19 +62,25 @@ function fetchStockQuote() {
 				response = JSON.parse(req.responseText);
 				var price;
 				if (response.Data) {
-					var struct = {
-						"1": true, 
-						"2": response.Data.Symbol, 
-						"3": roundPercent(response.Data.ChangePercent)
-					};
-					console.log("sending data to pebble " + JSON.stringify(struct));
-					Pebble.sendAppMessage(struct);
+					if (response.Data.ChangePercent > 5.0 || response.Data.ChangePercent < -5.0){
+						var struct = {
+							"1": true, 
+							"2": response.Data.Symbol, 
+							"3": roundPercent(response.Data.ChangePercent)
+						};
+						console.log("sending data to pebble " + JSON.stringify(struct));
+						Pebble.sendAppMessage(struct);
+					} else {
+						console.log("stock doesn't change so much for idx = " + current_idx);
+					}
 				}
 			} else {
 				console.log("Request returned error code " + req.status.toString());
 			}
 		}
-		
+		current_idx++;
+		if (current_idx == symbols.length) current_idx = 0;
+		else fetchStockQuote(current_idx);
 		//setTimeout(fetchStockQuote, 500);
 	};
 	req.send(null);
