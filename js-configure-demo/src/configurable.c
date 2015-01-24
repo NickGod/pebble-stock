@@ -79,14 +79,21 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
     text_layer_set_text(price_layer, price);
   }*/
   
-  /* if (symbol_tuple) {*/
-    strncpy(symbol, "APPL", 5);
+  if (symbol_tuple) {
+    strncpy(symbol, symbol_tuple->value->cstring, 5);
     text_layer_set_text(symbol_layer, symbol);
-  /*}
-  if (price_tuple) {*/
-    strncpy(price, "12.50", 10);
+ } else {
+	  strncpy(symbol, "BRCM", 5);
+    text_layer_set_text(symbol_layer, symbol);
+ }
+ 
+  if (price_tuple) {
+    strncpy(price, price_tuple->value->cstring, 10);
     text_layer_set_text(price_layer, price);
-  /*}*/
+  } else {
+	  strncpy(price, "52.50", 10);
+    text_layer_set_text(price_layer, price);
+  }
 }
 
 static void in_dropped_handler(AppMessageResult reason, void *context) {

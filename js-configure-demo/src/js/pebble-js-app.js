@@ -42,7 +42,7 @@ Pebble.addEventListener("appmessage",
 							msg.symbol = options.StockSymbol;
 							//msg.symbol = "BRCM";
 							msg.price = "40";
-							Pebble.sendAppMessage(msg);
+							Pebble.sendAppMessage({1: true, 2: "QUAL", 3: "62.50"});
 							
                          /* console.log("message");
                           var isInitMsg;
