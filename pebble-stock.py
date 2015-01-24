@@ -43,8 +43,8 @@ def generateRand():
 
 @app.route('/json')
 def display():
-    #symbol = request.args.get('symbol')
-    struct = {"Data":{"Status":"SUCCESS","Name":"Google Inc","Symbol":"GOOGL","LastPrice":541.98,"Change":4.68000000000006,"ChangePercent":0.871021775544401,"Timestamp":"Fri Jan 23 15:59:00 UTC-05:00 2015","MarketCap":183745311480,"Volume":215950,"ChangeYTD":530.66,"ChangePercentYTD":2.1331926280481,"High":545.2,"Low":536.82,"Open":538.6}}
+    symbol = request.args.get('symbol')
+    struct = {"Data":{"Status":"SUCCESS","Name":"[dictStock[:symbol]]","Symbol":"[symbol]","LastPrice":541.98,"Change":4.68000000000006,"ChangePercent":0.871021775544401,"Timestamp":"Fri Jan 23 15:59:00 UTC-05:00 2015","MarketCap":183745311480,"Volume":215950,"ChangeYTD":530.66,"ChangePercentYTD":2.1331926280481,"High":545.2,"Low":536.82,"Open":538.6}}
     return json.dumps(struct)
 
 def main():
