@@ -56,9 +56,9 @@ static void set_symbol_msg(char *symbolName) {
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
-  /*Tuple *init_tuple = dict_find(iter, QUOTE_KEY_INIT);
+  Tuple *init_tuple = dict_find(iter, QUOTE_KEY_INIT);
   Tuple *symbol_tuple = dict_find(iter, QUOTE_KEY_SYMBOL);
-  Tuple *price_tuple = dict_find(iter, QUOTE_KEY_PRICE);*/
+  Tuple *price_tuple = dict_find(iter, QUOTE_KEY_PRICE);
 
   /*if (init_tuple) {
     // only accept one initial tuple; the second may be a server reply to
