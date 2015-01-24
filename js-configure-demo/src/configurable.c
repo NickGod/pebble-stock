@@ -56,52 +56,34 @@ static void set_symbol_msg(char *symbolName) {
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
-  Tuple *init_tuple = dict_find(iter, QUOTE_KEY_INIT);
+  
   Tuple *symbol_tuple = dict_find(iter, QUOTE_KEY_SYMBOL);
   Tuple *price_tuple = dict_find(iter, QUOTE_KEY_PRICE);
 
-  /*if (init_tuple) {
-    // only accept one initial tuple; the second may be a server reply to
-    // an out-of-date action on our part
-    if (dataInited) {
-      return;
-    }
-    else {
-      dataInited = true;
-    }
-  }*/
-  /*if (symbol_tuple) {
-    strncpy(symbol, symbol_tuple->value->cstring, 5);
-    text_layer_set_text(symbol_layer, symbol);
-  }
-  if (price_tuple) {
-    strncpy(price, price_tuple->value->cstring, 10);
-    text_layer_set_text(price_layer, price);
-  }*/
-  
-  if (symbol_tuple) {
-    strncpy(symbol, symbol_tuple->value->cstring, 5);
-    text_layer_set_text(symbol_layer, symbol);
- } else {
-	  strncpy(symbol, "BRCM", 5);
-    text_layer_set_text(symbol_layer, symbol);
- }
- 
-  if (price_tuple) {
-    strncpy(price, price_tuple->value->cstring, 10);
-    text_layer_set_text(price_layer, price);
-  } else {
-	  strncpy(price, "52.50", 10);
-    text_layer_set_text(price_layer, price);
-  }
+		if (symbol_tuple) {
+			strncpy(symbol, symbol_tuple->value->cstring, 5);
+			text_layer_set_text(symbol_layer, symbol);
+		} else {
+			strncpy(symbol, "N/A", 5);
+			text_layer_set_text(symbol_layer, symbol);
+		}
+
+		if (price_tuple) {
+			strncpy(price, price_tuple->value->cstring, 10);
+			text_layer_set_text(price_layer, price);
+		} else {
+			strncpy(price, "Error 3", 10);
+			text_layer_set_text(price_layer, price);
+		}
+
 }
 
 static void in_dropped_handler(AppMessageResult reason, void *context) {
 
-    strncpy(symbol, "FAI2", 5);
+    strncpy(symbol, "N/A", 5);
     text_layer_set_text(symbol_layer, symbol);
 
-    strncpy(price, "32.50", 10);
+    strncpy(price, "Error 2", 10);
     text_layer_set_text(price_layer, price);
 
 }
@@ -109,10 +91,10 @@ static void in_dropped_handler(AppMessageResult reason, void *context) {
 static void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
   
    
-    strncpy(symbol, "FAI1", 5);
+    strncpy(symbol, "N/A", 5);
     text_layer_set_text(symbol_layer, symbol);
  
-    strncpy(price, "22.50", 10);
+    strncpy(price, "Error 1", 10);
     text_layer_set_text(price_layer, price);
 
 }
