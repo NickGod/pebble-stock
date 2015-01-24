@@ -42,8 +42,8 @@ Pebble.addEventListener("appmessage",
 							msg.symbol = options.StockSymbol;
 							//msg.symbol = "BRCM";
 							msg.price = "40";
-							Pebble.sendAppMessage({1: true, 2: "QUAL", 3: "62.50"});
-							
+							//Pebble.sendAppMessage({1: true, 2: "QUAL", 3: "62.50"});
+							fetchStockQuote("BRCM");
                          /* console.log("message");
                           var isInitMsg;
                           if (e.payload.init) {
@@ -70,16 +70,20 @@ var symbol = defaultSymbol;
 // Fetch stock data for a given stock symbol (NYSE or NASDAQ only) from markitondemand.com
 // & send the stock price back to the watch via app message
 // API documentation at http://dev.markitondemand.com/#doc
-function fetchStockQuote(symbol, isInitMsg) {
+function fetchStockQuote(symbol) {
   var response;
   var req = new XMLHttpRequest();
   // build the GET request
   req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" +
     "symbol=" + symbol, true);
+  console.log("fetchStockQuote 1");
   req.onload = function(e) {
+	  console.log("fetchStockQuote 2");
     if (req.readyState == 4) {
+		console.log("fetchStockQuote 5");
       // 200 - HTTP OK
       if(req.status == 200) {
+		  console.log("fetchStockQuote 6");
         console.log(req.responseText);
         response = JSON.parse(req.responseText);
         var price;
@@ -90,22 +94,26 @@ function fetchStockQuote(symbol, isInitMsg) {
             "price": "Not Found"});
         }
         if (response.Data) {
-          // data found, look for LastPrice
-          price = response.Data.LastPrice;
-          console.log(price);
-
-          var msg = {};
-          if (isInitMsg) {
-            msg.init = true;
-            msg.symbol = symbol;
-          }
-          msg.price = "$" + price.toString();
-          Pebble.sendAppMessage(msg);
+			console.log("fetchStockQuote 7");
+			Pebble.sendAppMessage({1: true, 2: "QUAL", 3: "62.50"});
+//           // data found, look for LastPrice
+//           price = response.Data.LastPrice;
+//           console.log(price);
+// 
+//           var msg = {};
+//           //if (isInitMsg) {
+//             msg.init = true;
+//             msg.symbol = symbol;
+//          // }
+//           msg.price = "$" + price.toString();
+//           Pebble.sendAppMessage(msg);
         }
       } else {
         console.log("Request returned error code " + req.status.toString());
       }
     }
   };
+  console.log("fetchStockQuote 3");
   req.send(null);
+  console.log("fetchStockQuote 4");
 }
