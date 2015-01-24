@@ -1,5 +1,6 @@
 var initialized = false;
 var options = {};
+var symbol = "BRCM";
 var watch_list = [];
 var running_flag = false;
 
@@ -15,6 +16,7 @@ Pebble.addEventListener("webviewclosed", function(e) {
 	//Using primitive JSON validity and non-empty check
 	if (e.response.charAt(0) == "{" && e.response.slice(-1) == "}" && e.response.length > 5) {
 		options = JSON.parse(decodeURIComponent(e.response));
+		symbol = options.StockSymbol;
 		console.log("Options = " + JSON.stringify(options));
 	} else {
 		console.log("Cancelled");
@@ -40,10 +42,6 @@ Pebble.addEventListener("appmessage", function(e) {
 			fetchStockQuote();
 	});
 
-
-// We use the fake "PBL" symbol as default
-var defaultSymbol = "GOOG";
-var symbol = defaultSymbol;
 
 // Fetch stock data for a given stock symbol (NYSE or NASDAQ only) from markitondemand.com
 // & send the stock price back to the watch via app message

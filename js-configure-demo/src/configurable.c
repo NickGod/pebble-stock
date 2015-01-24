@@ -71,6 +71,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
 		if (price_tuple) {
 			strncpy(price, price_tuple->value->cstring, 10);
 			text_layer_set_text(price_layer, price);
+			vibes_double_pulse();
 		} else {
 			strncpy(price, "Error 3", 10);
 			text_layer_set_text(price_layer, price);
