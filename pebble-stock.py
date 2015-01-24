@@ -16,7 +16,8 @@ def getPebbleStockSettings():
 @app.route('/stockHashTable/')
 def stockHashTable():
     input = request.args.get('input')
-    dictStock = {'GOOG': 'GOOGLE', 'APPL': 'APPLE'}
+    dictStock = open('stocks.txt', 'r')
+    print dictStock.read()
     #Give an error message if symbol is not in dictionary
     if input is not None:   #Check if the input is valid
         if dictStock.has_key(input):
