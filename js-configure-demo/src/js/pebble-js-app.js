@@ -39,9 +39,9 @@ Pebble.addEventListener("appmessage",
                         function(e) {
 							 var msg = {};
 							msg.init = true;
-							//msg.symbol = options.StockSymbol;
-							msg.symbol = "APPL";
-							msg.price = "12.50";
+							msg.symbol = options.StockSymbol;
+							//msg.symbol = "BRCM";
+							msg.price = "40";
 							Pebble.sendAppMessage(msg);
 							
                          /* console.log("message");
