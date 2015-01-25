@@ -9,6 +9,17 @@ dictStock = {'MMM': '3M Co', 'AXP': 'American Express Co', 'T': 'AT&T Inc', 'BA'
     'PFE': 'Pfizer Inc', 'PG': 'Procter & Gamble Co', 'TRV': 'Travelers Companies Inc', 'UTX': 'United Technologies Corp', 'UNH': 'UnitedHealth Group Inc',
     'VZ': 'Verizon Communications Inc', 'V': 'Visa Inc', 'WMT': 'Wal-Mart Stores Inc', 'GOOG': 'Google Inc', 'AAPL': 'Apple Inc'}
 
+@app.route('/checkSymbol')
+def checkSymbol():
+    x = request.args.get('symbol')  #Pass in a symbol as the argument
+    if x is not None:
+        if x in dictStock:
+            return dictStock[x]
+        else:
+            return "Not found"
+    else:
+        return ""
+	
 @app.route('/')
 def get_stock():
     x = request.args.get('Symbol')  #Pass in a symbol as the argument
