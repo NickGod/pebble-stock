@@ -18,9 +18,10 @@ enum {
 };
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
-  
-  Tuple *symbol_tuple = dict_find(iter, QUOTE_KEY_SYMBOL);
-  Tuple *price_tuple = dict_find(iter, QUOTE_KEY_PRICE);
+		
+		Tuple *fetch_tuple = dict_find(iter, QUOTE_KEY_FETCH);
+		Tuple *symbol_tuple = dict_find(iter, QUOTE_KEY_SYMBOL);
+		Tuple *price_tuple = dict_find(iter, QUOTE_KEY_PRICE);
 
 		if (symbol_tuple) {
 			strncpy(symbol, symbol_tuple->value->cstring, 6);
@@ -33,10 +34,17 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
 		if (price_tuple) {
 			strncpy(price, price_tuple->value->cstring, 10);
 			text_layer_set_text(s_percentage_layer, price);
-			vibes_double_pulse();
+			
 		} else {
 			strncpy(price, "Error 3", 10);
 			text_layer_set_text(s_percentage_layer, price);
+		}
+		
+		if (fetch_tuple){
+			if (strcmp(fetch_tuple->value->cstring, "true") == 0){
+				vibes_double_pulse();
+			}
+			
 		}
 
 }
