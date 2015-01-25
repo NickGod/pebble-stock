@@ -7,9 +7,8 @@ var notify_list = [];
 var global_notify_idx = 0;
 var global_change_threshold = 0.5;
 var max_notify_one_turn = 3;
-var symbol_vibe_time_table = {
-	
-};
+var symbol_vibe_time_table = {};
+var working_state = false;
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
@@ -80,7 +79,6 @@ function fetchStockQuote(current_idx) {
 					if (Math.abs(response.Data.ChangePercent) > global_change_threshold){
 					//if (1){
 						var struct = {
-							"1": true, 
 							"2": response.Data.Symbol, 
 							"3": roundPercent(response.Data.ChangePercent)
 						};
@@ -113,21 +111,41 @@ function notifyPebble(){
 		global_notify_idx = 0;
 		setTimeout(startFetchQuote, 2000);
 	} else {
-		var vibe_flag = false;
-		if (symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] === undefined ){
-			//if this company doesn't get vibe yet
-			console.log(notify_list[global_notify_idx]["2"] + " not recorded");
+		
+		var current_hour = new Date().getHours(); 
+		if (!working_state && (current_hour >= 5 && current_hour < 16)){
+			//transit to work state
+			working_state = true;
+			symbol_vibe_time_table = {};
+		} else if (working_state && (current_hour >= 16 || current_hour < 5)){
+			//transit to not work state
+			working_state = false;
+		}
+		
+		var vibe_flag;
+		var current_time = new Date().getTime();
+		if (symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] === undefined) {
 			vibe_flag = true;
-			 
 			symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] = current_time;
 		} else {
-			var current_time = new Date().getTime();
-			if (current_time - symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] > 24 * 3600 * 1000){
-				//if last vibe is more than 24 hour ago
-				vibe_flag = true;
-				symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] = current_time;
-			} 
+			vibe_flag = false;
 		}
+		
+
+// 		if (symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] === undefined ){
+// 			//if this company doesn't get vibe yet
+// 			console.log(notify_list[global_notify_idx]["2"] + " not recorded");
+// 			vibe_flag = true;
+// 			 
+// 			symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] = current_time;
+// 		} else {
+// 			var current_time = new Date().getTime();
+// 			if (current_time - symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] > 24 * 3600 * 1000){
+// 				//if last vibe is more than 24 hour ago
+// 				vibe_flag = true;
+// 				symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] = current_time;
+// 			} 
+// 		}
 		notify_list[global_notify_idx]["1"] = vibe_flag ? "true" : "false";
 		Pebble.sendAppMessage(notify_list[global_notify_idx]);
 		global_notify_idx++;
