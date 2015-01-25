@@ -7,10 +7,10 @@
   "versionLabel": "1.0",
   "capabilities": [ "configurable" ],
   "watchapp": {
-    "watchface": false
+    "watchface": true
   },
   "appKeys": {
-    "dummy": 0
+    "stock": 0
   },
   "resources": {
     "media": []

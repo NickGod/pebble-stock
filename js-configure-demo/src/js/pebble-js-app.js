@@ -5,7 +5,7 @@ var watch_list = [];
 var running_flag = false;
 var notify_list = [];
 var global_notify_idx = 0;
-var global_change_threshold = 5.0;
+var global_change_threshold = 3.0;
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
@@ -20,6 +20,7 @@ Pebble.addEventListener("webviewclosed", function(e) {
 		options = JSON.parse(decodeURIComponent(e.response));
 		symbol = options.StockSymbol;
 		console.log("Options = " + JSON.stringify(options));
+		startFetchQuote();
 	} else {
 		console.log("Cancelled");
 	}
@@ -30,7 +31,7 @@ Pebble.addEventListener("ready",
 	function(e) {
 		console.log("connect! " + e.ready);
 		console.log(e.type);
-	if (!running_flag)
+	//if (!running_flag)
 			startFetchQuote();
 	});
 
@@ -47,6 +48,7 @@ Pebble.addEventListener("appmessage", function(e) {
 
 
 function startFetchQuote() {
+	console.log("startFetchQuote");
 	notify_list = [];
 	fetchStockQuote(0);
 }
@@ -102,8 +104,10 @@ function fetchStockQuote(current_idx) {
 }
 
 function notifyPebble(){
+	console.log("notifyPebble");
 	if (global_notify_idx == notify_list.length){
 		global_notify_idx = 0;
+		setTimeout(startFetchQuote, 2000);
 	} else {
 		Pebble.sendAppMessage(notify_list[global_notify_idx]);
 		global_notify_idx++;
