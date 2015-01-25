@@ -3,7 +3,9 @@ var options = {};
 var symbols = ["BRCM", "FB", "GOOGL"];
 var watch_list = [];
 var running_flag = false;
-
+var notify_list = [];
+var global_notify_idx = 0;
+var global_change_threshold = 5.0;
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
@@ -29,7 +31,7 @@ Pebble.addEventListener("ready",
 		console.log("connect! " + e.ready);
 		console.log(e.type);
 	if (!running_flag)
-			fetchStockQuote(0);
+			startFetchQuote();
 	});
 
 // Set callback for appmessage events
@@ -39,8 +41,15 @@ Pebble.addEventListener("appmessage", function(e) {
 		msg.symbol = options.StockSymbol;
 		msg.price = "40";
 		if (!running_flag)
-			fetchStockQuote(0);
+			startFetchQuote();
 	});
+
+
+
+function startFetchQuote() {
+	notify_list = [];
+	fetchStockQuote(0);
+}
 
 
 // Fetch stock data for a given stock symbol (NYSE or NASDAQ only) from markitondemand.com
@@ -62,14 +71,16 @@ function fetchStockQuote(current_idx) {
 				response = JSON.parse(req.responseText);
 				var price;
 				if (response.Data) {
-					if (response.Data.ChangePercent > 5.0 || response.Data.ChangePercent < -5.0){
+					if (Math.abs(response.Data.ChangePercent) > global_change_threshold){
+					//if (1){
 						var struct = {
 							"1": true, 
 							"2": response.Data.Symbol, 
 							"3": roundPercent(response.Data.ChangePercent)
 						};
+						notify_list.push(struct);
 						console.log("sending data to pebble " + JSON.stringify(struct));
-						Pebble.sendAppMessage(struct);
+						
 					} else {
 						console.log("stock doesn't change so much for idx = " + current_idx);
 					}
@@ -79,11 +90,25 @@ function fetchStockQuote(current_idx) {
 			}
 		}
 		current_idx++;
-		if (current_idx == symbols.length) current_idx = 0;
-		else fetchStockQuote(current_idx);
+		if (current_idx == symbols.length) {
+			current_idx = 0; 
+			global_notify_idx = 0;
+			console.log("final notify list : " + JSON.stringify(notify_list));
+			notifyPebble();
+		} else fetchStockQuote(current_idx);
 		//setTimeout(fetchStockQuote, 500);
 	};
 	req.send(null);
+}
+
+function notifyPebble(){
+	if (global_notify_idx == notify_list.length){
+		global_notify_idx = 0;
+	} else {
+		Pebble.sendAppMessage(notify_list[global_notify_idx]);
+		global_notify_idx++;
+		setTimeout(notifyPebble, 2000);
+	}
 }
 
 function roundPercent(long_float_string){
