@@ -24,22 +24,18 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
 
 		if (symbol_tuple) {
 			strncpy(symbol, symbol_tuple->value->cstring, 6);
-			//text_layer_set_text(symbol_layer, symbol);
 			text_layer_set_text(s_stock_layer, symbol);
 		} else {
 			strncpy(symbol, "N/A", 5);
-			//text_layer_set_text(symbol_layer, symbol);
 			text_layer_set_text(s_stock_layer, symbol);
 		}
 
 		if (price_tuple) {
 			strncpy(price, price_tuple->value->cstring, 10);
-			//text_layer_set_text(price_layer, price);
 			text_layer_set_text(s_percentage_layer, price);
 			vibes_double_pulse();
 		} else {
 			strncpy(price, "Error 3", 10);
-			//text_layer_set_text(price_layer, price);
 			text_layer_set_text(s_percentage_layer, price);
 		}
 
@@ -137,7 +133,7 @@ static void main_window_load(Window *window) {
   text_layer_set_background_color(s_stock_layer, GColorClear);
   text_layer_set_text_color(s_stock_layer, GColorBlack);
   text_layer_set_text_alignment(s_stock_layer, GTextAlignmentCenter);
-  text_layer_set_text(s_stock_layer, "GOOGL");
+  text_layer_set_text(s_stock_layer, "BRCM");
 
   // Setting the custom font for stock display
   //s_stock_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PERFECT_DOS_20));

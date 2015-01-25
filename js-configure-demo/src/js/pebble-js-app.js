@@ -5,7 +5,7 @@ var watch_list = [];
 var running_flag = false;
 var notify_list = [];
 var global_notify_idx = 0;
-var global_change_threshold = 3.0;
+var global_change_threshold = 0.5;
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
@@ -84,7 +84,7 @@ function fetchStockQuote(current_idx) {
 						console.log("sending data to pebble " + JSON.stringify(struct));
 						
 					} else {
-						console.log("stock doesn't change so much for idx = " + current_idx);
+						console.log("stock doesn't change " + global_change_threshold + " for idx = " + current_idx);
 					}
 				}
 			} else {
