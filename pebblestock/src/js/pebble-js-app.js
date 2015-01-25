@@ -5,14 +5,15 @@ var watch_list = [];
 var running_flag = false;
 var notify_list = [];
 var global_notify_idx = 0;
-var global_change_threshold = 0.5;
+var global_change_threshold = 5;
 var max_notify_one_turn = 3;
 var symbol_vibe_time_table = {};
 var working_state = false;
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
-  Pebble.openURL('http://mqchau.pythonanywhere.com/pebblestocksettings.html?'+encodeURIComponent(JSON.stringify(options)));
+  //Pebble.openURL('http://mqchau.pythonanywhere.com/pebblestocksettings.html?'+encodeURIComponent(JSON.stringify(options)));
+  Pebble.openURL('http://mqchau.pythonanywhere.com/pebblestocksettings.html');
 });
 
 Pebble.addEventListener("webviewclosed", function(e) {
@@ -32,10 +33,9 @@ Pebble.addEventListener("webviewclosed", function(e) {
 // Set callback for the app ready event
 Pebble.addEventListener("ready",
 	function(e) {
-		console.log("connect! " + e.ready);
-		console.log(e.type);
-	//if (!running_flag)
-			startFetchQuote();
+		startFetchQuote();
+	
+			
 	});
 
 // Set callback for appmessage events
@@ -51,9 +51,35 @@ Pebble.addEventListener("appmessage", function(e) {
 
 
 function startFetchQuote() {
-	console.log("startFetchQuote");
-	notify_list = [];
-	fetchStockQuote(0);
+	
+	var response;
+	var req = new XMLHttpRequest();
+	
+	// build the GET request
+	//req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbols[current_idx], true);
+	req.open('GET', "http://mqchau.pythonanywhere.com/oldSymbols", true);
+	req.onload = function(e) {
+		if (req.readyState == 4) {
+			// 200 - HTTP OK
+			if(req.status == 200) {
+				console.log(req.responseText);
+				response = JSON.parse(req.responseText);
+				
+				symbols = response.symbols;
+				
+				console.log("startFetchQuote");
+				notify_list = [];
+				fetchStockQuote(0);
+				
+			} else {
+				console.log("Request returned error code " + req.status.toString());
+			}
+		}
+	
+	};
+	req.send(null);
+	
+	
 }
 
 
@@ -67,7 +93,9 @@ function fetchStockQuote(current_idx) {
 	var req = new XMLHttpRequest();
 	
 	// build the GET request
-	req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbols[current_idx], true);
+	//req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbols[current_idx], true);
+	console.log("http://mqchau.pythonanywhere.com/json?" + "symbol=" + symbols[current_idx]);
+	req.open('GET', "http://mqchau.pythonanywhere.com/json?" + "symbol=" + symbols[current_idx], true);
 	req.onload = function(e) {
 		if (req.readyState == 4) {
 			// 200 - HTTP OK

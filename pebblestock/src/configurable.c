@@ -129,24 +129,21 @@ static void main_window_load(Window *window) {
   //s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PERFECT_DOS_48));
 
   // Improve the layout to be more like a watchface
-  //text_layer_set_font(s_time_layer, s_time_font);
-  text_layer_set_font(s_time_layer,fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
+  text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
 
   // Add it as a child layer to the Window's root layer
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
 
   // Create StockLayer
-  s_stock_layer = text_layer_create(GRect(0, 50, 144, 35));
+  s_stock_layer = text_layer_create(GRect(0, 70, 144, 35));
   text_layer_set_background_color(s_stock_layer, GColorClear);
   text_layer_set_text_color(s_stock_layer, GColorBlack);
   text_layer_set_text_alignment(s_stock_layer, GTextAlignmentCenter);
-  text_layer_set_text(s_stock_layer, "BRCM");
+  text_layer_set_text(s_stock_layer, "N/A");
 
   // Setting the custom font for stock display
-  //s_stock_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PERFECT_DOS_20));
-  //text_layer_set_font(s_stock_layer, s_stock_font);
-  text_layer_set_font(s_stock_layer, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
+  text_layer_set_font(s_stock_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_stock_layer));
 
   // Create PercentageLayer
@@ -154,11 +151,9 @@ static void main_window_load(Window *window) {
   text_layer_set_background_color(s_percentage_layer, GColorClear);
   text_layer_set_text_color(s_percentage_layer, GColorBlack);
   text_layer_set_text_alignment(s_percentage_layer, GTextAlignmentCenter);
-  text_layer_set_text(s_percentage_layer, "%5.5");
+  text_layer_set_text(s_percentage_layer, "N/A");
 
-//   s_percentage_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PERFECT_DOS_20));
-//   text_layer_set_font(s_percentage_layer, s_percentage_font);
-  text_layer_set_font(s_stock_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28));
+  text_layer_set_font(s_percentage_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_percentage_layer));
 
 
