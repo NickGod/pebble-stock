@@ -7,6 +7,9 @@ var notify_list = [];
 var global_notify_idx = 0;
 var global_change_threshold = 0.5;
 var max_notify_one_turn = 3;
+var symbol_vibe_time_table = {
+	
+};
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
@@ -110,6 +113,22 @@ function notifyPebble(){
 		global_notify_idx = 0;
 		setTimeout(startFetchQuote, 2000);
 	} else {
+		var vibe_flag = false;
+		if (symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] === undefined ){
+			//if this company doesn't get vibe yet
+			console.log(notify_list[global_notify_idx]["2"] + " not recorded");
+			vibe_flag = true;
+			 
+			symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] = current_time;
+		} else {
+			var current_time = new Date().getTime();
+			if (current_time - symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] > 24 * 3600 * 1000){
+				//if last vibe is more than 24 hour ago
+				vibe_flag = true;
+				symbol_vibe_time_table[notify_list[global_notify_idx]["2"]] = current_time;
+			} 
+		}
+		notify_list[global_notify_idx]["1"] = vibe_flag ? "true" : "false";
 		Pebble.sendAppMessage(notify_list[global_notify_idx]);
 		global_notify_idx++;
 		setTimeout(notifyPebble, 2000);
