@@ -6,6 +6,7 @@ var running_flag = false;
 var notify_list = [];
 var global_notify_idx = 0;
 var global_change_threshold = 0.5;
+var max_notify_one_turn = 3;
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
@@ -105,7 +106,7 @@ function fetchStockQuote(current_idx) {
 
 function notifyPebble(){
 	console.log("notifyPebble");
-	if (global_notify_idx == notify_list.length){
+	if (global_notify_idx == notify_list.length || global_notify_idx == max_notify_one_turn){
 		global_notify_idx = 0;
 		setTimeout(startFetchQuote, 2000);
 	} else {
@@ -119,7 +120,7 @@ function roundPercent(long_float_string){
 	var long_float = parseFloat(long_float_string);
 	var short_float = long_float.toFixed(2);
 	if (short_float > 0)
-		return "+" + short_float.toString();
+		return "+" + short_float.toString() + "%";
 	else
-		return short_float.toString();
+		return short_float.toString() + "%";
 }

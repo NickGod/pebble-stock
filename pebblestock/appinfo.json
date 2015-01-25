@@ -1,16 +1,19 @@
 {
-  "uuid": "4145256f-4776-4a0c-a172-31b7a1d82195",
-  "shortName": "Configurable",
-  "longName": "Configurable",
-  "companyName": "MakeAwesomeHappen",
+  "uuid": "4145256f-4776-4a0c-a172-31b7a1d80907",
+  "shortName": "PebbleStock",
+  "longName": "Pebble Stock",
+  "companyName": "StockOverflow",
   "versionCode": 1,
   "versionLabel": "1.0",
-  "capabilities": [ "configurable" ],
+  "capabilities": [ "show stock" ],
   "watchapp": {
     "watchface": true
   },
   "appKeys": {
-    "stock": 0
+    "stock": 0,
+    "market": 1,
+    "finance": 2,
+    "equity": 3
   },
   "resources": {
     "media": []
