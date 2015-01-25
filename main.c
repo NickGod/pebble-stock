@@ -5,10 +5,6 @@ static TextLayer *s_time_layer;
 static TextLayer *s_stock_layer;
 static TextLayer *s_percentage_layer;
 
-static GFont s_time_font;
-static GFont s_stock_font;
-static GFont s_percentage_font;
-
 static void update_time() {
   // Get a tm structure
   time_t temp = time(NULL); 
@@ -40,11 +36,9 @@ static void main_window_load(Window *window) {
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorBlack);
 
-  //Set Gfont
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PERFECT_DOS_48));
 
   // Improve the layout to be more like a watchface
-  text_layer_set_font(s_time_layer, s_time_font);
+  text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
 
   // Add it as a child layer to the Window's root layer
@@ -58,8 +52,7 @@ static void main_window_load(Window *window) {
   text_layer_set_text(s_stock_layer, "GOOG");
 
   // Setting the custom font for stock display
-  s_stock_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PERFECT_DOS_20));
-  text_layer_set_font(s_stock_layer, s_stock_font);
+  text_layer_set_font(s_stock_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_stock_layer));
 
   // Create PercentageLayer
@@ -67,10 +60,9 @@ static void main_window_load(Window *window) {
   text_layer_set_background_color(s_percentage_layer, GColorClear);
   text_layer_set_text_color(s_percentage_layer, GColorBlack);
   text_layer_set_text_alignment(s_percentage_layer, GTextAlignmentCenter);
-  text_layer_set_text(s_percentage_layer, "%5.5");
+  text_layer_set_text(s_percentage_layer, "$10000000");
 
-  s_percentage_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PERFECT_DOS_20));
-  text_layer_set_font(s_percentage_layer, s_percentage_font);
+  text_layer_set_font(s_percentage_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_percentage_layer));
 
 
@@ -87,9 +79,7 @@ static void main_window_unload(Window *window) {
   text_layer_destroy(s_stock_layer);
   text_layer_destroy(s_percentage_layer);
 
-  fonts_unload_custom_font(s_stock_font);
-  fonts_unload_custom_font(s_time_font);
-  fonts_unload_custom_font(s_percentage_font);
+
 }
 
 static void init() {
