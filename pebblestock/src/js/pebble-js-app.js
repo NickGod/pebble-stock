@@ -12,30 +12,49 @@ var working_state = false;
 
 Pebble.addEventListener("showConfiguration", function() {
   console.log("showing configuration");
-  //Pebble.openURL('http://mqchau.pythonanywhere.com/pebblestocksettings.html?'+encodeURIComponent(JSON.stringify(options)));
-  Pebble.openURL('http://mqchau.pythonanywhere.com/pebblestocksettings.html');
+  var optionstring = '';
+  if (localStorage.getItem('Symbols') != null){
+	optionstring = "OldSymbols=" + localStorage.getItem('Symbols');
+  } else {
+	optionstring = "OldSymbols=" + symbols.join(',');
+
+  }
+  var url = ('http://cdn.rawgit.com/mqchau/mqchau.github.io/master/pebblestock/index.html?'+optionstring);
+  console.log('opening url ' + url);
+  Pebble.openURL(url);
+
 });
 
 Pebble.addEventListener("webviewclosed", function(e) {
 	console.log("configuration closed");
+	if (e.response) {
+		var options = JSON.parse(decodeURIComponent(e.response));
+		console.log('options received from configuration: ' + JSON.stringify(options));
+		var note = options['Symbols'];
+		localStorage.setItem('Symbols', note.join(','));
+		console.log("Symbols = " + localStorage.getItem('Symbols'));
+		startFetchQuote();
+    //sendNoteContents();
+	} else {
+		console.log('no symbol received');
+	}
 	// webview closed
 	//Using primitive JSON validity and non-empty check
-	if (e.response.charAt(0) == "{" && e.response.slice(-1) == "}" && e.response.length > 5) {
-		options = JSON.parse(decodeURIComponent(e.response));
-		symbol = options.StockSymbol;
-		console.log("Options = " + JSON.stringify(options));
-		startFetchQuote();
-	} else {
-		console.log("Cancelled");
-	}
+	//if (e.response.charAt(0) == "{" && e.response.slice(-1) == "}" && e.response.length > 5) {
+		//options = JSON.parse(decodeURIComponent(e.response));
+		//symbol = options.StockSymbol;
+		//console.log("Options = " + JSON.stringify(options));
+		//startFetchQuote();
+	//} else {
+		//console.log("Cancelled");
+	//}
 });
 
 // Set callback for the app ready event
 Pebble.addEventListener("ready",
 	function(e) {
-		startFetchQuote();
-	
-			
+		console.log("APP is ready");
+		//startFetchQuote();
 	});
 
 // Set callback for appmessage events
@@ -51,13 +70,13 @@ Pebble.addEventListener("appmessage", function(e) {
 
 
 function startFetchQuote() {
-	
+	console.log("startFetchQuote 1");	
 	var response;
 	var req = new XMLHttpRequest();
 	
 	// build the GET request
-	//req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbols[current_idx], true);
-	req.open('GET', "http://mqchau.pythonanywhere.com/oldSymbols", true);
+	req.open('GET', "http://dev.markitondemand.com/Api/v2/Quote/json?" + "symbol=" + symbols[current_idx], true);
+	//req.open('GET', "http://mqchau.pythonanywhere.com/oldSymbols", true);
 	req.onload = function(e) {
 		if (req.readyState == 4) {
 			// 200 - HTTP OK
@@ -67,7 +86,7 @@ function startFetchQuote() {
 				
 				symbols = response.symbols;
 				
-				console.log("startFetchQuote");
+				console.log("startFetchQuote 2");
 				notify_list = [];
 				fetchStockQuote(0);
 				
@@ -93,9 +112,9 @@ function fetchStockQuote(current_idx) {
 	var req = new XMLHttpRequest();
 	
 	// build the GET request
-	//req.open('GET', "http://dev.markitondemand.com/Api/Quote/json?" + "symbol=" + symbols[current_idx], true);
-	console.log("http://mqchau.pythonanywhere.com/json?" + "symbol=" + symbols[current_idx]);
-	req.open('GET', "http://mqchau.pythonanywhere.com/json?" + "symbol=" + symbols[current_idx], true);
+	req.open('GET', "http://dev.markitondemand.com/Api/v2/Quote/json?" + "symbol=" + symbols[current_idx], true);
+	//console.log("http://mqchau.pythonanywhere.com/json?" + "symbol=" + symbols[current_idx]);
+	//req.open('GET', "http://mqchau.pythonanywhere.com/json?" + "symbol=" + symbols[current_idx], true);
 	req.onload = function(e) {
 		if (req.readyState == 4) {
 			// 200 - HTTP OK
